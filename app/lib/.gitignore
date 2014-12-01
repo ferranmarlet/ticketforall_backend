@@ -1,0 +1,7 @@
+# Slim framework files #
+########################
+Slim
+composer.json
+composer.lock
+composer.phar
+phpunit.xml.dist
