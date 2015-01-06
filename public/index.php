@@ -20,7 +20,7 @@ echo '<br>realpath = '.realpath('../app/lib/Slim/Slim.php');
  *
  * If you are using Composer, you can skip this step.
  */
-require '../app/lib/Slim/Slim.php';
+require 'app/lib/Slim/Slim.php';
 
 \Slim\Slim::registerAutoloader();
 
