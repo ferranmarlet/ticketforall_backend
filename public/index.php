@@ -4,8 +4,13 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
-echo getcwd();
-echo '<br>'.realpath('../app/lib/Slim/Slim.php');
+use \Slim\Slim;
+use RedBean_Facade as R;
+
+require '../vendor/autoload.php';
+
+echo 'getcwd() = '.getcwd();
+echo '<br>realpath = '.realpath('../app/lib/Slim/Slim.php');
 
 /**
  * Step 1: Require the Slim Framework
