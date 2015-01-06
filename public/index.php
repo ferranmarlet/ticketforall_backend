@@ -4,6 +4,8 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+require '../app/prova.php';
+
 use \Slim\Slim;
 use RedBean_Facade as R;
 
