@@ -53,3 +53,5 @@ Thumbs.db
 
 # Config file, because it contains production/local database credentials
 /app/config/config.php
+/app/config/*
+config.php
