@@ -4,20 +4,66 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d32fcabb1e639fd2655260496104b0a6",
+    "hash": "3ac1e6ba96450b25c838458859e3889d",
     "packages": [
         {
-            "name": "twig/twig",
-            "version": "v1.16.2",
+            "name": "slim/slim",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig.git",
-                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc"
+                "url": "https://github.com/codeguy/Slim.git",
+                "reference": "04958a10ed95bc7bc97568e573877d4f9b62db48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/42f758d9fe2146d1f0470604fc05ee43580873fc",
-                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc",
+                "url": "https://api.github.com/repos/codeguy/Slim/zipball/04958a10ed95bc7bc97568e573877d4f9b62db48",
+                "reference": "04958a10ed95bc7bc97568e573877d4f9b62db48",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-mcrypt": "Required for HTTP cookie encryption"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Slim": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Lockhart",
+                    "email": "info@joshlockhart.com",
+                    "homepage": "http://www.joshlockhart.com/"
+                }
+            ],
+            "description": "Slim Framework, a PHP micro framework",
+            "homepage": "http://github.com/codeguy/Slim",
+            "keywords": [
+                "microframework",
+                "rest",
+                "router"
+            ],
+            "time": "2014-12-09 19:59:29"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v1.16.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "6dc11a1e8ecfc30e2c68aaeb218148409d8e68af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/6dc11a1e8ecfc30e2c68aaeb218148409d8e68af",
+                "reference": "6dc11a1e8ecfc30e2c68aaeb218148409d8e68af",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +98,7 @@
                 },
                 {
                     "name": "Twig Team",
-                    "homepage": "https://github.com/fabpot/Twig/graphs/contributors",
+                    "homepage": "http://twig.sensiolabs.org/contributors",
                     "role": "Contributors"
                 }
             ],
@@ -61,7 +107,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-10-17 12:53:44"
+            "time": "2014-12-25 19:58:19"
         }
     ],
     "packages-dev": [],
@@ -69,6 +115,7 @@
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.0"
     },
