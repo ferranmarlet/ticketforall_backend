@@ -51,3 +51,5 @@ Thumbs.db
 /vendor/
 /vendor/*
 
+# Config file, because it contains production/local database credentials
+/app/config/config.php
