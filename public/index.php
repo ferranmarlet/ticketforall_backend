@@ -36,6 +36,8 @@ $app = new \Slim\Slim();
  */
 //This functions have been moved to /app/
 require '../app/routes/main.php';
+//a veure si així funciona la api
+require '../app/routes/main.php';
 
 //We added a data layer using RedBeans ORM:
 require '../app/data/connection.php';
