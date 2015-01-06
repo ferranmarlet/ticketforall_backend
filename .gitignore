@@ -47,3 +47,7 @@ Thumbs.db
 # Backup files created after merge
 *.orig
 
+# Vendor folder, which is managed by composer
+/vendor/
+/vendor/*
+
