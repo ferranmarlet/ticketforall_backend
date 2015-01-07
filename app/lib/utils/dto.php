@@ -1,5 +1,5 @@
 <?php
-class parser{
+class dto{
   // TODO: we should prevent SQL injection here, maybe. Or maybe in the data layer
 
 
@@ -14,7 +14,7 @@ class parser{
   * Decodes a json encoded string and returns its value into an array
   */
   function jsonToArray($json){
-    $array = json_decode($json);
+    $array = (array) json_decode($json);
     return $array;
   }
 }

@@ -31,11 +31,22 @@ require '../vendor/slim/slim/Slim/Slim.php';
  */
 $app = new \Slim\Slim();
 
-
 /*
-* Add slim container
+* Add singleton entities to slim container
 */
 
+require '../app/lib/factories/controllerFactory.php';
+$app->container->singleton('controllerFactory', function () {
+    return new controllerFactory();
+});
+require '../app/lib/factories/entityFactory.php';
+$app->container->singleton('entityFactory', function () {
+    return new entityFactory();
+});
+require '../app/lib/utils/dto.php';
+$app->container->singleton('dto', function () {
+    return new dto();
+});
 
 /**
  * Step 3: Define the Slim application routes
