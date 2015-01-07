@@ -119,4 +119,17 @@ $app->post('/api/periode_absencia/:token',function ($token) use ($app) {
 
   }
 });
+$app->get('/api/periode_absencia/:token',function ($token) use ($app) {
+  $jsonData = $app->request()->params();
+  $user = R::findOne('user','token='.$token);
+  if($user->id != 0) {
+      return $dto->toJson($user->api_token);
+
+    } else {
+      $app->response->setStatus(404);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('message'=>'Customer not found')));
+    }
+
+});
 ?>
