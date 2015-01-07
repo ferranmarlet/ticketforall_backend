@@ -6,56 +6,37 @@
 $app->post('/api/users/login',function () use ($app) {
 
   $dto = $app->dto;
-
   $data = $dto->jsonToArray($app->request()->params()['data']);
 
   if(isset($data['email']) && !is_null($data['email']) && isset($data['password']) && !is_null($data['password'])){
 
     $controllerFactory = $app->controllerFactory;
+    $sessionController = $controllerFactory->getSessionCtrl();
 
-    // TODO: procces login and return token
-
-
-    $message = $controllerFactory->hola();
-
+    $message = $sessionController->hola();
     $app->response->setStatus(200);
     $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->setBody(json_encode(array('message'=>'hola')));
+    $app->response->setBody(json_encode(array('result'=>'ok','token'=>$message)));
+
+
+
+    $loginToken = $sessionController->login($data['email'],$data['password']);
+
+    if($loginToken) {
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('token'=>$loginToken)));
+    }else{
+      $app->response->setStatus(404); // Not found
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'user not found')));
+    }
   }else{
     $app->response->setStatus(400); //Http status code 400 means "Bad request"
     $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->setBody(json_encode(array('message'=>'email and password must be set')));
+    $app->response->setBody(json_encode(array('result'=>'error','message'=>'email and password must be set')));
   }
-
-
-  /*$jsonData = $app->request()->params();
-
-  //Here we should use the Slim container to obtain a singleton instance of the dto
-  $data = $dto->jsonToArray($jsonData);
-
-  if(isset($data['email']) and isset($data['password'])) {
-
-    // TODO: instantiate controller. Ask controller to link this layer and the data layer
-    // TODO: get sessionCtrl through slim container
-    $loginResult = $sessionCtrl->login($data['email'],$data['password']);
-
-    //TODO:
-    //Here we should use the slim container to obtain the suscribed user entity
-    $user = $userEntity->getUser($data);
-    if($user->id != 0) {
-      return $dto->toJson($user->api_token);
-
-    } else {
-      $app->response->setStatus(404);
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('message'=>'Customer not found')));
-    }
-
-  } else {
-
-  }*/
 });
-
 
 /*
 * Return the daily code for the newspaper
