@@ -5,16 +5,26 @@
 */
 $app->post('/api/users/login',function () use ($app) {
 
-  $data = $app->request()->params();
+  $dto = $app->dto;
 
-  if(isset($data['email']) && !is_null($data['email'])){
-    $app->response->setStatus(200); //Http status code 400 means "Bad request"
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+
+  if(isset($data['email']) && !is_null($data['email']) && isset($data['password']) && !is_null($data['password'])){
+
+    $controllerFactory = $app->controllerFactory;
+
+    // TODO: procces login and return token
+
+
+    $message = $controllerFactory->hola();
+
+    $app->response->setStatus(200);
     $app->response->headers->set('Content-Type', 'application/json');
     $app->response->setBody(json_encode(array('message'=>'hola')));
   }else{
     $app->response->setStatus(400); //Http status code 400 means "Bad request"
     $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->setBody(json_encode(array('message'=>'The field id must pertain to a customer')));
+    $app->response->setBody(json_encode(array('message'=>'email and password must be set')));
   }
 
 
