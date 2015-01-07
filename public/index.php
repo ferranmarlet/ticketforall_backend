@@ -31,6 +31,12 @@ require '../vendor/slim/slim/Slim/Slim.php';
  */
 $app = new \Slim\Slim();
 
+
+/*
+* Add slim container
+*/
+
+
 /**
  * Step 3: Define the Slim application routes
  *
@@ -42,7 +48,7 @@ $app = new \Slim\Slim();
 //This functions have been moved to /app/
 require '../app/routes/main.php';
 //a veure si així funciona la api
-require '../app/routes/main.php';
+require '../app/routes/api.php';
 
 //We added a data layer using RedBeans ORM:
 require '../app/data/connection.php';
