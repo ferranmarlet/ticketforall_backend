@@ -20,7 +20,7 @@ $app->post('/api/users/login',function () use ($app) {
     if($loginResult) {
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'ok','token'=>$loginToken, )));
+      $app->response->setBody(json_encode(array('result'=>'ok','token'=>$loginToken,'rol'=>$role)));
     }else{
       $app->response->setStatus(404); // Not found
       $app->response->headers->set('Content-Type', 'application/json');
