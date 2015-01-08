@@ -55,16 +55,16 @@ $app->post('/api/periode_absencia/:token',function ($token) use ($app) {
     if($result){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'ok','message'=>'Period created')));
+      $app->response->setBody($dto->toJson(array('result'=>'ok','message'=>'Period created')));
     }else{
       $app->response->setStatus(400); // Bad parameters
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'some error happened')));
+      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'some error happened')));
     }
   } else {
     $app->response->setStatus(401); // Unauthorized
     $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->setBody(json_encode(array('result'=>'error','message'=>'username or token not valid')));
+    $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'username or token not valid')));
   }
 });
 $app->get('/api/periode_absencia/:token',function ($token) use ($app) {
@@ -76,12 +76,12 @@ $app->get('/api/periode_absencia/:token',function ($token) use ($app) {
   if($infoPeriodes){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode($infoPeriodes));
+      $app->response->setBody($dto->toJson($infoPeriodes));
   }
   else {
     $app->response->setStatus(400); // No hi han periodes
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'any period found')));
+      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'any period found')));
   }
 
 });
@@ -95,12 +95,12 @@ $app->put('/api/periode_absencia/:token',function ($token) use ($app) {
   if($string){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'ok','message'=>'Period updated')));
+      $app->response->setBody($dto->toJson(array('result'=>'ok','message'=>'Period updated')));
   }
   else {
       $app->response->setStatus(400); // No hi han periodes
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'any period found')));
+      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'any period found')));
   }
 
 });
@@ -114,12 +114,12 @@ $app->delete('/api/periode_absencia/:token',function ($token) use ($app) {
   if($string){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'ok','message'=>'Period deleted')));
+      $app->response->setBody($dto->toJson(array('result'=>'ok','message'=>'Period deleted')));
   }
   else {
       $app->response->setStatus(400); // No hi han periodes
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'period not found')));
+      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'period not found')));
   }
 
 });
@@ -135,12 +135,12 @@ $app->get('/api/codi_diari/:token',function ($token) use ($app) {
   if($codi){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode($codi));
+      $app->response->setBody($dto->toJson(array('result'=>'ok',"code"=>$codi)));
   }
   else {
       $app->response->setStatus(404);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'coupon not found or already used')));
+      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'coupon not found or already used')));
   }
 
 });
