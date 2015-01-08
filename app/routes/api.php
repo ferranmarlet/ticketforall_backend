@@ -176,5 +176,43 @@ $app->get('/api/codi_diari/:token',function ($token) use ($app) {
   }
 
 });
+$app->get('/api/user/:token',function ($token) use ($app) {
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+  $controllerFactory = $app->controllerFactory;
+  $gestionarInfoPersonalController = $controllerFactory->getGestionarInfoPersonalCtrl();
+  $info = $gestionarInfoPersonalController->getInfoSubscriptor();
+  if($info){
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode($info));
+  }
+  else {
+      $app->response->setStatus(400); // bad request   
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'bad request')));
+  }
+ 
+});
+$app->get('/api/subscriptors/:token',function ($token) use ($app) {
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+  $controllerFactory = $app->controllerFactory;
+  $consultarSubscriptorsAmbPeriodesAbsenciaController = $controllerFactory->consultarSubscriptorsAmbPeriodesAbsenciaCtrl();
+  $info = $consultarSubscriptorsAmbPeriodesAbsenciaController->obtenirSubscriptorsPeriodeDabsencia();
+  if($info){
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode($info));
+  }
+  else {
+      $app->response->setStatus(400); // bad request   
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'bad request')));
+  }
+ 
+});
+
+
 
 ?>
