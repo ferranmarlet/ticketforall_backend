@@ -50,8 +50,10 @@ class periodEntity{
       $user = R::findOne('user',' token = ? ',array($user_token));
 
       if(!is_null($user)) {
-
+        R::debug(true);
         $period = R::load('period',$id);
+        echo '<pre>';
+        print_r($period);
 
         if(!is_null($period)) {
 
@@ -63,7 +65,6 @@ class periodEntity{
 
           return true;
         }
-
       }
     } catch (Exception $e) {
       return false;
