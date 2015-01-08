@@ -10,6 +10,16 @@ class userEntity{
     }
   }
 
+  function verifyUser($username,$token){
+    $user = R::findOne('user','username = ? and token = ?',array($username,$token));
+
+    if(!is_null($user)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   function login($email, $password, &$loginToken, &$role){
       $user = R::findOne('user',' email = ? and password = ? ', array($email, $password));
 

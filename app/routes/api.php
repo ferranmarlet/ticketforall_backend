@@ -20,16 +20,16 @@ $app->post('/api/users/login',function () use ($app) {
     if($loginResult) {
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'ok','token'=>$loginToken,'rol'=>$role)));
+      $app->response->setBody($dto->toJson(array('result'=>'ok','token'=>$loginToken,'rol'=>$role)));
     }else{
       $app->response->setStatus(404); // Not found
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'user or password are incorrect')));
+      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'user or password are incorrect')));
     }
   }else{
     $app->response->setStatus(400); //Http status code 400 means "Bad request"
     $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->setBody(json_encode(array('result'=>'error','message'=>'email and password must be set')));
+    $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'email and password must be set')));
   }
 });
 
@@ -76,21 +76,30 @@ $app->post('/api/periode_absencia/:token',function ($token) use ($app) {
   $dto = $app->dto;
   $data = $dto->jsonToArray($app->request()->params()['data']);
 
-  //Here we should use the Slim container to obtain a singleton instance of the dto
-  $data = $dto->jsonToArray($jsonData);
-
   $controllerFactory = $app->controllerFactory;
-  $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
-  $return = $gestioPeriodesAbsenciaController->crearPeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
-     if($return){
+  // verify user token is valid and correlates to nomUsuari
+  $sessionController = $controllerFactory->getSessionCtrl();
+  $userIsValid = $sessionController->verifyUser($data['nomUsuari'],$token);
+
+  if($userIsValid) {
+
+    $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+    $result = $gestioPeriodesAbsenciaController->crearPeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
+
+    if($result){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'Ok','message'=>'Period created')));
+      $app->response->setBody(json_encode(array('result'=>'ok','message'=>'Period created')));
     }else{
       $app->response->setStatus(400); // Bad parameters
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'user not found')));
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'some error happened')));
     }
+  } else {
+    $app->response->setStatus(401); // Unauthorized
+    $app->response->headers->set('Content-Type', 'application/json');
+    $app->response->setBody(json_encode(array('result'=>'error','message'=>'username or token not valid')));
+  }
 });
 $app->get('/api/periode_absencia/:token',function ($token) use ($app) {
   $dto = $app->dto;
@@ -108,8 +117,9 @@ $app->get('/api/periode_absencia/:token',function ($token) use ($app) {
       $app->response->headers->set('Content-Type', 'application/json');
       $app->response->setBody(json_encode(array('result'=>'error','message'=>'any period found')));
   }
- 
+
 });
+
 $app->put('/api/periode_absencia/:token',function ($token) use ($app) {
   $dto = $app->dto;
   $data = $dto->jsonToArray($app->request()->params()['data']);
@@ -119,15 +129,16 @@ $app->put('/api/periode_absencia/:token',function ($token) use ($app) {
   if($string){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'Ok','message'=>'Period updated')));
+      $app->response->setBody(json_encode(array('result'=>'ok','message'=>'Period updated')));
   }
   else {
       $app->response->setStatus(400); // No hi han periodes
       $app->response->headers->set('Content-Type', 'application/json');
       $app->response->setBody(json_encode(array('result'=>'error','message'=>'any period found')));
   }
- 
+
 });
+
 $app->delete('/api/periode_absencia/:token',function ($token) use ($app) {
   $dto = $app->dto;
   $data = $dto->jsonToArray($app->request()->params()['data']);
@@ -137,51 +148,16 @@ $app->delete('/api/periode_absencia/:token',function ($token) use ($app) {
   if($string){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'Ok','message'=>'Period deleted')));
+      $app->response->setBody(json_encode(array('result'=>'ok','message'=>'Period deleted')));
   }
   else {
       $app->response->setStatus(400); // No hi han periodes
       $app->response->headers->set('Content-Type', 'application/json');
       $app->response->setBody(json_encode(array('result'=>'error','message'=>'period not found')));
   }
- 
+
 });
-$app->get('/api/diaris_bescanviats/:token',function ($token) use ($app) {
-  $dto = $app->dto;
-  $data = $dto->jsonToArray($app->request()->params()['data']);
-  $controllerFactory = $app->controllerFactory;
-  $consultarDiarisBescanviatsController = $controllerFactory->getConsultarDiarisBescanviatsCtrl();
-  $infoDiarisBesc = $consultarDiarisBescanviatsController->obtenirDiarisBescanviats();
-  if($infoDiarisBesc){
-      $app->response->setStatus(200);
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode($infoDiarisBesc));
-  }
-  else {
-      $app->response->setStatus(400); // No hi han diaris bescanviats
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'any diari bescanviat found')));
-  }
- 
-});
-$app->get('/api/quioscos_propers/:token',function ($token) use ($app) {
-  $dto = $app->dto;
-  $data = $dto->jsonToArray($app->request()->params()['data']);
-  $controllerFactory = $app->controllerFactory;
-  $consultarQuioscosPropersController = $controllerFactory->getConsultarQuioscosPropersCtrl();
-  $infoQuioscosProp = $consultarQuioscosPropersController->getQuioscosPropers();
-  if($infoQuioscosProp){
-      $app->response->setStatus(200);
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode($infoQuioscosProp));
-  }
-  else {
-      $app->response->setStatus(400); // No hi han diaris bescanviats
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'any Quiosc near found')));
-  }
- 
-});
+
 $app->get('/api/codi_diari/:token',function ($token) use ($app) {
   $dto = $app->dto;
   $data = $dto->jsonToArray($app->request()->params()['data']);
@@ -194,11 +170,11 @@ $app->get('/api/codi_diari/:token',function ($token) use ($app) {
       $app->response->setBody(json_encode($codi));
   }
   else {
-      $app->response->setStatus(400); // bad request   
+      $app->response->setStatus(400); // bad request
       $app->response->headers->set('Content-Type', 'application/json');
       $app->response->setBody(json_encode(array('result'=>'error','message'=>'bad request')));
   }
- 
+
 });
 
 ?>

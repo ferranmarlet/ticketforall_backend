@@ -1,6 +1,7 @@
 <?php
 
 //for deevloping purposes we show all errors during execution
+// TODO: remove error messages
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
