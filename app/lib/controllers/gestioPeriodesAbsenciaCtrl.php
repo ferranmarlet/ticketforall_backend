@@ -28,12 +28,12 @@ class gestioPeriodesAbsenciaCtrl {
     return $periodEntity->updatePeriod($id,$startdate,$enddate,$user_token);
   }
 
-  function deletePeriode($id,$user_token) {
+  function eliminarPeriode($id,$user_token) {
     $this->app = \Slim\Slim::getInstance();
 
     $periodEntity = $this->app->entityFactory->getPeriodEntity();
 
-    return $periodEntity->deletePeriode($id,$user_token);
+    return $periodEntity->deletePeriod($id,$user_token);
   }
 }
 

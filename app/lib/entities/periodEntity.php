@@ -50,11 +50,13 @@ class periodEntity{
       $user = R::findOne('user',' token = ? ',array($user_token));
 
       if(!is_null($user)) {
+
         $period = R::load('period',$id);
 
         if(!is_null($period)) {
-          $parsedStartDate = date('d/m/y',strtotime($startDate));
-          $parsedEndDate = date('d/m/y',strtotime($endDate));
+
+          $parsedStartDate = date('d/m/y',strtotime($startdate));
+          $parsedEndDate = date('d/m/y',strtotime($enddate));
           $period->startdate = $parsedStartDate;
           $period->enddate = $parsedEndDate;
           $result = R::store($period);

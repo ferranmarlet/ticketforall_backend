@@ -106,7 +106,7 @@ $app->put('/api/periode_absencia/:token',function ($token) use ($app) {
   else {
       $app->response->setStatus(400); // No hi han periodes
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'any period found')));
+      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'no period found')));
   }
 
 });
