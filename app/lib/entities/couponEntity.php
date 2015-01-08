@@ -3,7 +3,7 @@ class couponEntity{
 
   function getCode($token) {
     try{
-
+      
       $user = R::findOne('user',' token = ? ', array($token));
 
       if(!is_null($user)) {
@@ -24,6 +24,7 @@ class couponEntity{
             $coupon->user_id = $user->id;
             $coupon->period_id = $currentPeriod->id;
             $coupon->used = 0;
+            $coupon->datevalid = $today;
             R::store($coupon);
 
             return $coupon->code;
