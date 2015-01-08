@@ -34,40 +34,6 @@ $app->post('/api/users/login',function () use ($app) {
 });
 
 /*
-* Return the daily code for the newspaper
-* Params: user token
-*/
-$app->get('/api/code/:token',function ($token) use ($app) {
-
-  $jsonData = $app->request()->params();
-
-  //Here we should use the Slim container to obtain a singleton instance of the dto
-  $data = $dto->jsonToArray($jsonData);
-
-  if(isset($data['email']) and isset($data['password'])) {
-
-    // TODO: instantiate controller. Ask controller to link this layer and the data layer
-    // TODO: get sessionCtrl through slim container
-    $loginResult = $sessionCtrl->login($data['email'],$data['password']);
-
-    //TODO:
-    //Here we should use the slim container to obtain the suscribed user entity
-    $user = $userEntity->getUser($data);
-    if($user->id != 0) {
-      return $dto->toJson($user->api_token);
-
-    } else {
-      $app->response->setStatus(404);
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('message'=>'Customer not found')));
-    }
-
-  } else {
-
-  }
-});
-
-/*
 * Creates a new abscense period
 * Params: user token, start_date, end_date
 */
@@ -159,60 +125,24 @@ $app->delete('/api/periode_absencia/:token',function ($token) use ($app) {
 });
 
 $app->get('/api/codi_diari/:token',function ($token) use ($app) {
+
   $dto = $app->dto;
-  $data = $dto->jsonToArray($app->request()->params()['data']);
+
   $controllerFactory = $app->controllerFactory;
-  $consultarCodiDiariController = $controllerFactory->getConsultarCodiDiariCtrl();
-  $codi = $consultarCodiDiariController->consultarCupo();
+  $consultarCodiDiariCtrl = $controllerFactory->getConsultarCodiDiariCtrl();
+
+  $codi = $consultarCodiDiariCtrl->consultarCupo($token);
   if($codi){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
       $app->response->setBody(json_encode($codi));
   }
   else {
-      $app->response->setStatus(400); // bad request
+      $app->response->setStatus(404);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'bad request')));
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'coupon not found or already used')));
   }
 
 });
-$app->get('/api/user/:token',function ($token) use ($app) {
-  $dto = $app->dto;
-  $data = $dto->jsonToArray($app->request()->params()['data']);
-  $controllerFactory = $app->controllerFactory;
-  $gestionarInfoPersonalController = $controllerFactory->getGestionarInfoPersonalCtrl();
-  $info = $gestionarInfoPersonalController->getInfoSubscriptor();
-  if($info){
-      $app->response->setStatus(200);
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode($info));
-  }
-  else {
-      $app->response->setStatus(400); // bad request   
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'bad request')));
-  }
- 
-});
-$app->get('/api/subscriptors/:token',function ($token) use ($app) {
-  $dto = $app->dto;
-  $data = $dto->jsonToArray($app->request()->params()['data']);
-  $controllerFactory = $app->controllerFactory;
-  $consultarSubscriptorsAmbPeriodesAbsenciaController = $controllerFactory->consultarSubscriptorsAmbPeriodesAbsenciaCtrl();
-  $info = $consultarSubscriptorsAmbPeriodesAbsenciaController->obtenirSubscriptorsPeriodeDabsencia();
-  if($info){
-      $app->response->setStatus(200);
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode($info));
-  }
-  else {
-      $app->response->setStatus(400); // bad request   
-      $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'bad request')));
-  }
- 
-});
-
-
 
 ?>
