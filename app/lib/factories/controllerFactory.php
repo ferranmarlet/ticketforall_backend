@@ -3,8 +3,7 @@
 require '../app/lib/controllers/sessionCtrl.php';
 
 class controllerFactory{
-  function _construct(){
-
+  function __construct(){
   }
 
   function getSessionCtrl(){

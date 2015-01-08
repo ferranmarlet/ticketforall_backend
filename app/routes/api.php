@@ -13,19 +13,14 @@ $app->post('/api/users/login',function () use ($app) {
     $controllerFactory = $app->controllerFactory;
     $sessionController = $controllerFactory->getSessionCtrl();
 
-    $message = $sessionController->hola();
-    $app->response->setStatus(200);
-    $app->response->headers->set('Content-Type', 'application/json');
-    $app->response->setBody(json_encode(array('result'=>'ok','token'=>$message)));
+    $loginToken = '';
+    $role = '';
+    $loginResult = $sessionController->login($data['email'],$data['password'],$loginToken,$role);
 
-
-
-    $loginToken = $sessionController->login($data['email'],$data['password']);
-
-    if($loginToken) {
+    if($loginResult) {
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('token'=>$loginToken)));
+      $app->response->setBody(json_encode(array('result'=>'ok','token'=>$loginToken, )));
     }else{
       $app->response->setStatus(404); // Not found
       $app->response->headers->set('Content-Type', 'application/json');
