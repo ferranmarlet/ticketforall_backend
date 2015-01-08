@@ -8,14 +8,14 @@ $app->post('/api/users/login',function () use ($app) {
   $dto = $app->dto;
   $data = $dto->jsonToArray($app->request()->params()['data']);
 
-  if(isset($data['email']) && !is_null($data['email']) && isset($data['password']) && !is_null($data['password'])){
+  if(isset($data['username']) && !is_null($data['username']) && isset($data['password']) && !is_null($data['password'])){
 
     $controllerFactory = $app->controllerFactory;
     $sessionController = $controllerFactory->getSessionCtrl();
 
     $loginToken = '';
     $role = '';
-    $loginResult = $sessionController->login($data['email'],$data['password'],$loginToken,$role);
+    $loginResult = $sessionController->login($data['username'],$data['password'],$loginToken,$role);
 
     if($loginResult) {
       $app->response->setStatus(200);
@@ -49,8 +49,8 @@ $app->post('/api/periode_absencia/:token',function ($token) use ($app) {
 
   if($userIsValid) {
 
-    $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
-    $result = $gestioPeriodesAbsenciaController->crearPeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
+    $gestioPeriodesAbsenciaCtrl = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+    $result = $gestioPeriodesAbsenciaCtrl->crearPeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
 
     if($result){
       $app->response->setStatus(200);
@@ -67,12 +67,15 @@ $app->post('/api/periode_absencia/:token',function ($token) use ($app) {
     $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'username or token not valid')));
   }
 });
+
 $app->get('/api/periode_absencia/:token',function ($token) use ($app) {
+
   $dto = $app->dto;
-  $data = $dto->jsonToArray($app->request()->params()['data']);
+
   $controllerFactory = $app->controllerFactory;
-  $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
-  $infoPeriodes = $gestioPeriodesAbsenciaController->consultarPeriodes();
+  $gestioPeriodesAbsenciaCtrl = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+  $infoPeriodes = $gestioPeriodesAbsenciaCtrl->consultarPeriodes($token);
+
   if($infoPeriodes){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
@@ -87,12 +90,15 @@ $app->get('/api/periode_absencia/:token',function ($token) use ($app) {
 });
 
 $app->put('/api/periode_absencia/:token',function ($token) use ($app) {
+
   $dto = $app->dto;
   $data = $dto->jsonToArray($app->request()->params()['data']);
+
   $controllerFactory = $app->controllerFactory;
-  $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
-  $string = $gestioPeriodesAbsenciaController->updatePeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
-  if($string){
+  $gestioPeriodesAbsenciaCtrl = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+
+  $result = $gestioPeriodesAbsenciaCtrl->updatePeriode($data['id'],$data['dataIni'],$data['dataFi'],$token);
+  if($result){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
       $app->response->setBody($dto->toJson(array('result'=>'ok','message'=>'Period updated')));
@@ -106,12 +112,15 @@ $app->put('/api/periode_absencia/:token',function ($token) use ($app) {
 });
 
 $app->delete('/api/periode_absencia/:token',function ($token) use ($app) {
+
   $dto = $app->dto;
   $data = $dto->jsonToArray($app->request()->params()['data']);
+
   $controllerFactory = $app->controllerFactory;
-  $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
-  $string = $gestioPeriodesAbsenciaController->eliminarPeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
-  if($string){
+  $gestioPeriodesAbsenciaCtrl = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+  $result = $gestioPeriodesAbsenciaCtrl->eliminarPeriode($data['id'],$token);
+
+  if($result){
       $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
       $app->response->setBody($dto->toJson(array('result'=>'ok','message'=>'Period deleted')));
@@ -119,7 +128,7 @@ $app->delete('/api/periode_absencia/:token',function ($token) use ($app) {
   else {
       $app->response->setStatus(400); // No hi han periodes
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'period not found')));
+      $app->response->setBody($dto->toJson(array('result'=>'error','message'=>'period not found or wrong user token')));
   }
 
 });

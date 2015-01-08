@@ -33,28 +33,56 @@ class periodEntity{
     return false;
   }
 
+  function getAll($user_token) {
 
-
-  function getUser($api_token) {
-    $user = R::findOne('user',' api_token = ? ', array($api_token));
+    $user = R::findOne('user',' token = ? ',array($user_token));
 
     if(!is_null($user)) {
-      return $user->export();
-    }else{
+      $periods = R::findAll('period',' user_id = ? ',array($user->id));
+      return R::exportAll($periods);
+    } else {
       return false;
     }
   }
 
-  function login($email, $password, &$loginToken, &$role){
-      $user = R::findOne('user',' email = ? and password = ? ', array($email, $password));
+  function updatePeriod($id,$startdate,$enddate,$user_token) {
+    try {
+      $user = R::findOne('user',' token = ? ',array($user_token));
 
       if(!is_null($user)) {
-        $loginToken = $user->token;
-        $role = $user->role;
-        return true;
-      }else{
-        return false;
+        $period = R::load('period',$id);
+
+        if(!is_null($period)) {
+          $parsedStartDate = date('d/m/y',strtotime($startDate));
+          $parsedEndDate = date('d/m/y',strtotime($endDate));
+          $period->startdate = $parsedStartDate;
+          $period->enddate = $parsedEndDate;
+          $result = R::store($period);
+
+          return true;
+        }
+
       }
+    } catch (Exception $e) {
+      return false;
+    }
+    return false;
+  }
+
+  function deletePeriod($id,$user_token) {
+    try {
+      $user = R::findOne('user',' token = ? ',array($user_token));
+
+      if(!is_null($user)) {
+        $period = R::load('period',$id);
+        R::trash($period);
+
+        return true;
+      }
+    } catch (Exception $e) {
+      return false;
+    }
+    return false;
   }
 }
 ?>

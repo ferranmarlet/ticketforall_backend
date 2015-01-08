@@ -20,8 +20,8 @@ class userEntity{
     }
   }
 
-  function login($email, $password, &$loginToken, &$role){
-      $user = R::findOne('user',' email = ? and password = ? ', array($email, $password));
+  function login($username, $password, &$loginToken, &$role){
+      $user = R::findOne('user',' username = ? and password = ? ', array($username, $password));
 
       if(!is_null($user)) {
         $loginToken = $user->token;

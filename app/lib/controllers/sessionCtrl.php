@@ -10,13 +10,10 @@ class sessionCtrl {
     return $userEntity->verifyUser($username,$token);
   }
 
-  function login($email,$password, &$loginToken, &$role) {
+  function login($username,$password, &$loginToken, &$role) {
     $this->app = \Slim\Slim::getInstance();
     $userEntity = $this->app->entityFactory->getUserEntity();
-    return $userEntity->login($email,$password,$loginToken,$role);
-  }
-  function hola(){
-    return "hola";
+    return $userEntity->login($username,$password,$loginToken,$role);
   }
 }
 ?>

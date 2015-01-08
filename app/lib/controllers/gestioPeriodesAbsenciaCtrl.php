@@ -11,8 +11,29 @@ class gestioPeriodesAbsenciaCtrl {
     return $periodEntity->createPeriod($startDate,$endDate,$username);
   }
 
-  function hola(){
-    return "hola";
+  function consultarPeriodes($user_token){
+    $this->app = \Slim\Slim::getInstance();
+
+    $periodEntity = $this->app->entityFactory->getPeriodEntity();
+
+    return $periodEntity->getAll($user_token);
+
+  }
+
+  function updatePeriode($id,$startdate,$enddate,$user_token) {
+    $this->app = \Slim\Slim::getInstance();
+
+    $periodEntity = $this->app->entityFactory->getPeriodEntity();
+
+    return $periodEntity->updatePeriod($id,$startdate,$enddate,$user_token);
+  }
+
+  function deletePeriode($id,$user_token) {
+    $this->app = \Slim\Slim::getInstance();
+
+    $periodEntity = $this->app->entityFactory->getPeriodEntity();
+
+    return $periodEntity->deletePeriode($id,$user_token);
   }
 }
 
