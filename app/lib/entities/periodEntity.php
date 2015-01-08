@@ -53,7 +53,7 @@ class periodEntity{
 
         $period = R::load('period',$id);
 
-        if($period->id != 0)) {
+        if($period->id != 0) {
 
           $parsedStartDate = date('d/m/y',strtotime($startdate));
           $parsedEndDate = date('d/m/y',strtotime($enddate));
