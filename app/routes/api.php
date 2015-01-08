@@ -73,36 +73,132 @@ $app->get('/api/code/:token',function ($token) use ($app) {
 */
 $app->post('/api/periode_absencia/:token',function ($token) use ($app) {
 
-  $jsonData = $app->request()->params();
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
 
   //Here we should use the Slim container to obtain a singleton instance of the dto
   $data = $dto->jsonToArray($jsonData);
 
-  if(isset($token) and isset($data['start_date']) and isset($data['end_date'])) {
-
-    // TODO: instantiate controller. Ask controller to link this layer and the data layer
-    // TODO: get sessionCtrl through slim container
-
-
-
-
-
-    $period_creation_result = $snewPeriodCtrl->createPeriod($user_id,$data['start_date'],$data['end_date']);
-
-    //TODO:
-    //Here we should use the slim container to obtain the suscribed user entity
-    $user = $userEntity->getUser($data);
-    if($user->id != 0) {
-      return $dto->toJson($user->api_token);
-
-    } else {
-      $app->response->setStatus(404);
+  $controllerFactory = $app->controllerFactory;
+  $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+  $return = $gestioPeriodesAbsenciaController->crearPeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
+     if($return){
+      $app->response->setStatus(200);
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('message'=>'Customer not found')));
+      $app->response->setBody(json_encode(array('result'=>'Ok','message'=>'Period created')));
+    }else{
+      $app->response->setStatus(400); // Bad parameters
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'user not found')));
     }
-
-  } else {
-
-  }
 });
+$app->get('/api/periode_absencia/:token',function ($token) use ($app) {
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+  $controllerFactory = $app->controllerFactory;
+  $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+  $infoPeriodes = $gestioPeriodesAbsenciaController->consultarPeriodes();
+  if($infoPeriodes){
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode($infoPeriodes));
+  }
+  else {
+    $app->response->setStatus(400); // No hi han periodes
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'any period found')));
+  }
+ 
+});
+$app->put('/api/periode_absencia/:token',function ($token) use ($app) {
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+  $controllerFactory = $app->controllerFactory;
+  $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+  $string = $gestioPeriodesAbsenciaController->updatePeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
+  if($string){
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'Ok','message'=>'Period updated')));
+  }
+  else {
+      $app->response->setStatus(400); // No hi han periodes
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'any period found')));
+  }
+ 
+});
+$app->delete('/api/periode_absencia/:token',function ($token) use ($app) {
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+  $controllerFactory = $app->controllerFactory;
+  $gestioPeriodesAbsenciaController = $controllerFactory->getGestioPeriodesAbsenciaCtrl();
+  $string = $gestioPeriodesAbsenciaController->eliminarPeriode($data['dataIni'],$data['dataFi'],$data['nomUsuari']);
+  if($string){
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'Ok','message'=>'Period deleted')));
+  }
+  else {
+      $app->response->setStatus(400); // No hi han periodes
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'period not found')));
+  }
+ 
+});
+$app->get('/api/diaris_bescanviats/:token',function ($token) use ($app) {
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+  $controllerFactory = $app->controllerFactory;
+  $consultarDiarisBescanviatsController = $controllerFactory->getConsultarDiarisBescanviatsCtrl();
+  $infoDiarisBesc = $consultarDiarisBescanviatsController->obtenirDiarisBescanviats();
+  if($infoDiarisBesc){
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode($infoDiarisBesc));
+  }
+  else {
+      $app->response->setStatus(400); // No hi han diaris bescanviats
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'any diari bescanviat found')));
+  }
+ 
+});
+$app->get('/api/quioscos_propers/:token',function ($token) use ($app) {
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+  $controllerFactory = $app->controllerFactory;
+  $consultarQuioscosPropersController = $controllerFactory->getConsultarQuioscosPropersCtrl();
+  $infoQuioscosProp = $consultarQuioscosPropersController->getQuioscosPropers();
+  if($infoQuioscosProp){
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode($infoQuioscosProp));
+  }
+  else {
+      $app->response->setStatus(400); // No hi han diaris bescanviats
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'any Quiosc near found')));
+  }
+ 
+});
+$app->get('/api/codi_diari/:token',function ($token) use ($app) {
+  $dto = $app->dto;
+  $data = $dto->jsonToArray($app->request()->params()['data']);
+  $controllerFactory = $app->controllerFactory;
+  $consultarCodiDiariController = $controllerFactory->getConsultarCodiDiariCtrl();
+  $codi = $consultarCodiDiariController->consultarCupo();
+  if($codi){
+      $app->response->setStatus(200);
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode($codi));
+  }
+  else {
+      $app->response->setStatus(400); // bad request   
+      $app->response->headers->set('Content-Type', 'application/json');
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'bad request')));
+  }
+ 
+});
+
 ?>
