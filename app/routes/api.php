@@ -24,7 +24,7 @@ $app->post('/api/users/login',function () use ($app) {
     }else{
       $app->response->setStatus(404); // Not found
       $app->response->headers->set('Content-Type', 'application/json');
-      $app->response->setBody(json_encode(array('result'=>'error','message'=>'user not found')));
+      $app->response->setBody(json_encode(array('result'=>'error','message'=>'user or password are incorrect')));
     }
   }else{
     $app->response->setStatus(400); //Http status code 400 means "Bad request"
