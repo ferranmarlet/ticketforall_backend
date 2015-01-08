@@ -2,11 +2,11 @@
     "require": {
         "php": ">=5.3.0",
         "twig/twig": "~1.0",
-        "slim/slim": "2.*",
-        "mbstring"
+        "slim/slim": "2.*"
     },
     "suggest": {
-        "ext-mcrypt": "Required for HTTP cookie encryption"
+        "ext-mcrypt": "Required for HTTP cookie encryption",
+        "mbstring": "Needed"
     },
     "autoload": {
         "psr-0": { "Slim": "." }
